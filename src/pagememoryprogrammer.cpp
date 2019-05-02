@@ -12,15 +12,13 @@ int PageMemoryProgrammer::write(const uint8_t* data, uint32_t size, uint32_t fla
         serial.send(loadMemoryPage);
 
         if (pageAddr == (pageSize - 1)) {
-            uint32_t pageIndex = flashOffset >> 1;
-            Instruction writeMemoryPage = instructionFactory.writeMemoryPage((pageIndex >> 8) & 0xff, pageIndex & 0xff);
+            Instruction writeMemoryPage = instructionFactory.writeMemoryPage((flashOffset >> 1) & 0xffff);
             serial.send(writeMemoryPage);
         }
     }
 
     if (flashOffset % pageSize) {
-        uint32_t pageIndex = flashOffset >> 1;
-        Instruction writeMemoryPage = instructionFactory.writeMemoryPage((pageIndex >> 8) & 0xff, pageIndex & 0xff);
+        Instruction writeMemoryPage = instructionFactory.writeMemoryPage((flashOffset >> 1) & 0xffff);
         serial.send(writeMemoryPage);
     }
 
