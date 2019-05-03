@@ -1,6 +1,12 @@
 #include "spi.h"
 #include "printspi.h"
 #include "instruction.h"
+#include "instructionexecutor.h"
+#include "instructionfactory.h"
+#include "pagememoryprogrammer.h"
+#include "serialcontroller.h"
+#include "printchipselect.h"
+#include "pagememoryprogrammer.h"
 
 #include <algorithm>
 #include <iterator>
@@ -11,21 +17,17 @@
 using namespace std;
 
 int main() {
-    unique_ptr<Spi> spi(new PrintSpi);
+    PrintSpi spi;
+    PrintChipSelect cs;
+    SerialController serial(spi, cs);
+    InstructionFactory factory;
+    InstructionExecutor executor(factory, serial);
 
-    char buf[10];
+    PageMemoryProgrammer memProg(executor, 4);
 
-    sprintf(buf, "hello");
+    uint8_t data[] = {1, 2, 3, 4, 5, 6, 7, 8, 9};
 
-    spi->transfer(reinterpret_cast<unsigned char*>(buf), 10);
-
-    Instruction ins(1, 2, 3, 4);
-
-    cout << "ins.size: "  << Instruction::size << endl;
-    cout << "ins.value: "  << ins.getValue() << endl;
-    cout << "ins.bytes: ";
-    memcpy(buf, ins.getBytes(), 4);
-    spi->transfer(reinterpret_cast<unsigned char*>(buf), 4);
+    memProg.write(data, sizeof(data));
 
     return 0;
 }

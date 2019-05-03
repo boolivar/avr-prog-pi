@@ -1,21 +1,18 @@
 #ifndef PAGEMEMORYPROGRAMMER_H
 #define PAGEMEMORYPROGRAMMER_H
 
-#include "cinttypes"
+#include "memoryprogrammer.h"
 
-class SerialController;
-class Instruction;
-class InstructionFactory;
+class InstructionExecutor;
 
-class PageMemoryProgrammer {
+class PageMemoryProgrammer: public MemoryProgrammer {
 public:
-    int write(const uint8_t* data, uint32_t size, uint32_t flashOffset = 0);
+    virtual int write(const uint8_t* data, uint32_t size, uint32_t flashOffset = 0);
 
-    PageMemoryProgrammer(const InstructionFactory& instructionFactory, SerialController& serial, uint8_t pageSize);
+    PageMemoryProgrammer(InstructionExecutor& executor, uint8_t pageSize);
 
 private:
-    const InstructionFactory& instructionFactory;
-    SerialController& serial;
+    InstructionExecutor& executor;
     const uint8_t pageSize;
 };
 

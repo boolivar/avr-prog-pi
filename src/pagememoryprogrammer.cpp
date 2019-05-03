@@ -1,30 +1,29 @@
 #include "pagememoryprogrammer.h"
 
-#include "serialcontroller.h"
+#include "instruction.h"
 #include "instructionfactory.h"
+#include "instructionexecutor.h"
+
+#include <functional>
 
 int PageMemoryProgrammer::write(const uint8_t* data, uint32_t size, uint32_t flashOffset) {
     for (uint32_t i = 0; i < size; ++i, ++flashOffset) {
         uint8_t pageAddr = flashOffset % pageSize;
 
         auto pLoadMemoryPage = (pageAddr & 0x01) ? &InstructionFactory::loadMemoryPageHigh : &InstructionFactory::loadMemoryPageLow;
-        Instruction loadMemoryPage = (instructionFactory.*pLoadMemoryPage)(pageAddr >> 1, data[i]);
-        serial.send(loadMemoryPage);
+        executor.exchange(std::bind(pLoadMemoryPage, std::placeholders::_1, pageAddr >> 1, data[i]));
 
         if (pageAddr == (pageSize - 1)) {
-            Instruction writeMemoryPage = instructionFactory.writeMemoryPage((flashOffset >> 1) & 0xffff);
-            serial.send(writeMemoryPage);
+            executor.exchange(std::bind(&InstructionFactory::writeMemoryPage, std::placeholders::_1, (flashOffset >> 1) & 0xffff));
         }
     }
 
     if (flashOffset % pageSize) {
-        Instruction writeMemoryPage = instructionFactory.writeMemoryPage((flashOffset >> 1) & 0xffff);
-        serial.send(writeMemoryPage);
+        executor.exchange(std::bind(&InstructionFactory::writeMemoryPage, std::placeholders::_1, (flashOffset >> 1) & 0xffff));
     }
-
-    return size;
+    return 0;
 }
 
-PageMemoryProgrammer::PageMemoryProgrammer(const InstructionFactory& instructionFacotry, SerialController& serial, uint8_t pageSize)
-    : instructionFactory(instructionFacotry), serial(serial), pageSize(pageSize) {
+PageMemoryProgrammer::PageMemoryProgrammer(InstructionExecutor &executor, uint8_t pageSize)
+    : executor(executor), pageSize(pageSize) {
 }
