@@ -31,11 +31,18 @@ int AvrProgrammer::writeEeprom(const std::vector<uint8_t>& data, uint32_t eeprom
 }
 
 int AvrProgrammer::writeFuse(uint32_t fuse, int mode) {
-
+    executor.exchange(std::bind(&InstructionFactory::writeFuseBits, std::placeholders::_1, fuse));
+    if (config.getFuseSize() > 1) {
+        executor.exchange(std::bind(&InstructionFactory::writeFuseHighBits, std::placeholders::_1, fuse >> 8));
+        if (config.getFuseSize() > 2) {
+            executor.exchange(std::bind(&InstructionFactory::writeFuseExtendedBits, std::placeholders::_1, fuse >> 16));
+        }
+    }
 }
 
 int AvrProgrammer::writeLock(uint8_t lock, int mode) {
-
+    executor.exchange(std::bind(&InstructionFactory::writeLockBits, std::placeholders::_1, lock));
+    return 0;
 }
 
 std::vector<uint8_t> AvrProgrammer::readMemory(uint32_t flashOffset) {
@@ -49,11 +56,23 @@ std::vector<uint8_t> AvrProgrammer::readMemory(uint32_t flashOffset) {
 }
 
 uint32_t AvrProgrammer::readFuse(int mode) {
+    Instruction low = executor.exchange(std::bind(&InstructionFactory::readFuseBits, std::placeholders::_1, 0xaa));
+    uint32_t fuse = low.getBytes()[3];
+    if (config.getFuseSize() > 1) {
+        Instruction high = executor.exchange(std::bind(&InstructionFactory::readFuseHighBits, std::placeholders::_1, 0xaa));
+        fuse |= (static_cast<uint32_t>(high.getBytes()[3]) << 8);
 
+        if (config.getFuseSize() > 2) {
+            Instruction extended = executor.exchange(std::bind(&InstructionFactory::readFuseExtendedBits, std::placeholders::_1, 0xaa));
+            fuse |= (static_cast<uint32_t>(extended.getBytes()[3]) << 16);
+        }
+    }
+    return fuse;
 }
 
 uint8_t AvrProgrammer::readLock(int mode) {
-
+    Instruction response = executor.exchange(std::bind(&InstructionFactory::readLockBits, std::placeholders::_1, 0xaa));
+    return response.getBytes()[3];
 }
 
 AvrProgrammer::AvrProgrammer(const AvrConfig& config, InstructionExecutor &executor, MemoryProgrammer &memProg, ChipSelect &cs)
