@@ -3,20 +3,16 @@
 
 #include "instruction.h"
 
-#include <cstdint>
-
 class Spi;
-class ChipSelect;
 
 class SerialController {
 public:
     Instruction send(const Instruction& instruction);
 
-    SerialController(Spi& spi, ChipSelect& chipSelect);
+    SerialController(Spi& spi);
 
 private:
     Spi& spi;
-    ChipSelect& chipSelect;
 
     uint8_t buf[Instruction::size];
 };

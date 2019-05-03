@@ -19,7 +19,7 @@ using namespace std;
 int main() {
     PrintSpi spi;
     PrintChipSelect cs;
-    SerialController serial(spi, cs);
+    SerialController serial(spi);
     InstructionFactory factory;
     InstructionExecutor executor(factory, serial);
 
