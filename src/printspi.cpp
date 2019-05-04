@@ -26,7 +26,9 @@ err_t PrintSpi::transfer(uint8_t *buf, uint32_t len) {
 }
 
 PrintSpi::PrintSpi() {
+    cout << "spi init" << endl;
 }
 
 PrintSpi::~PrintSpi() {
+    cout << "spi destroy" << endl;
 }

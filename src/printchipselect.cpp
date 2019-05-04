@@ -11,3 +11,12 @@ void PrintChipSelect::enable() {
 void PrintChipSelect::disable() {
     cout << "chip select disable" << endl;
 }
+
+PrintChipSelect::PrintChipSelect() {
+    throw "boom";
+    cout << "chip select init" << endl;
+}
+
+PrintChipSelect::~PrintChipSelect() {
+    cout << "chip select destroy" << endl;
+}
