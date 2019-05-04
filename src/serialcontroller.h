@@ -2,12 +2,13 @@
 #define SERIALCONTROLLER_H
 
 #include "instruction.h"
+#include "outputcontroller.h"
 
 class Spi;
 
-class SerialController {
+class SerialController: public OutputController {
 public:
-    Instruction send(const Instruction& instruction);
+    virtual Instruction send(const Instruction& instruction);
 
     SerialController(Spi& spi);
 
