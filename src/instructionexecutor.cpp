@@ -2,13 +2,15 @@
 
 #include "instruction.h"
 #include "instructionfactory.h"
-#include "serialcontroller.h"
+#include "outputcontroller.h"
+
+const InstructionFactory instructionFactory;
 
 Instruction InstructionExecutor::exchange(const std::function<Instruction(const InstructionFactory&)>& factoryOperation) {
     Instruction instruction = factoryOperation(instructionFactory);
     return controller.send(instruction);
 }
 
-InstructionExecutor::InstructionExecutor(SerialController& controller)
+InstructionExecutor::InstructionExecutor(OutputController& controller)
     : controller(controller) {
 }

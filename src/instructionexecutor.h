@@ -7,17 +7,16 @@
 
 class Instruction;
 class InstructionFactory;
-class SerialController;
+class OutputController;
 
 class InstructionExecutor {
 public:
     Instruction exchange(const std::function<Instruction(const InstructionFactory&)>& factoryOperation);
 
-    InstructionExecutor(SerialController& controller);
+    InstructionExecutor(OutputController& controller);
 
 private:
-    const InstructionFactory instructionFactory;
-    SerialController& controller;
+    OutputController& controller;
 };
 
 #endif // INSTRUCTIONEXECUTOR_H
