@@ -9,6 +9,6 @@ Instruction InstructionExecutor::exchange(const std::function<Instruction(const 
     return controller.send(instruction);
 }
 
-InstructionExecutor::InstructionExecutor(const InstructionFactory& instructionFactory, SerialController& controller)
-    : instructionFactory(instructionFactory), controller(controller) {
+InstructionExecutor::InstructionExecutor(SerialController& controller)
+    : controller(controller) {
 }

@@ -1,8 +1,5 @@
-#include "spi.h"
 #include "printspi.h"
-#include "instruction.h"
 #include "instructionexecutor.h"
-#include "instructionfactory.h"
 #include "pagememoryprogrammer.h"
 #include "serialcontroller.h"
 #include "printchipselect.h"
@@ -20,8 +17,7 @@ int main() {
     PrintSpi spi;
     PrintChipSelect cs;
     SerialController serial(spi);
-    InstructionFactory factory;
-    InstructionExecutor executor(factory, serial);
+    InstructionExecutor executor(serial);
 
     PageMemoryProgrammer memProg(executor, 4);
 
