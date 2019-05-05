@@ -2,7 +2,6 @@
 
 #include "instruction.h"
 #include "instructionfactory.h"
-#include "instructionexecutor.h"
 
 #include <functional>
 
@@ -24,6 +23,6 @@ int PageMemoryProgrammer::write(const uint8_t* data, uint32_t size, uint32_t fla
     return 0;
 }
 
-PageMemoryProgrammer::PageMemoryProgrammer(InstructionExecutor &executor, uint8_t pageSize)
-    : executor(executor), pageSize(pageSize) {
+PageMemoryProgrammer::PageMemoryProgrammer(OutputController& controller, uint8_t pageSize)
+    : executor(controller), pageSize(pageSize) {
 }

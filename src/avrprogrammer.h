@@ -1,12 +1,14 @@
 #ifndef AVRPROGRAMMER_H
 #define AVRPROGRAMMER_H
 
+#include "avrconfig.h"
+#include "instructionexecutor.h"
+
 #include <cinttypes>
 #include <vector>
 
-class AvrConfig;
+class OutputController;
 class ChipSelect;
-class InstructionExecutor;
 class MemoryProgrammer;
 
 class AvrProgrammer {
@@ -24,11 +26,11 @@ public:
     uint32_t readFuse(int mode = 0);
     uint8_t readLock(int mode = 0);
 
-    AvrProgrammer(const AvrConfig& config, InstructionExecutor& executor, MemoryProgrammer& memProg, ChipSelect& cs);
+    AvrProgrammer(const AvrConfig& config, OutputController& controller, MemoryProgrammer& memProg, ChipSelect& cs);
 
 private:
-    const AvrConfig& config;
-    InstructionExecutor& executor;
+    AvrConfig config;
+    InstructionExecutor executor;
     MemoryProgrammer& memProg;
     ChipSelect& cs;
 };

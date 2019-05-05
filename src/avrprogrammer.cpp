@@ -6,6 +6,7 @@
 #include "instructionfactory.h"
 #include "instruction.h"
 #include "memoryprogrammer.h"
+#include "outputcontroller.h"
 
 #include <functional>
 
@@ -75,6 +76,6 @@ uint8_t AvrProgrammer::readLock(int mode) {
     return response.getBytes()[3];
 }
 
-AvrProgrammer::AvrProgrammer(const AvrConfig& config, InstructionExecutor &executor, MemoryProgrammer &memProg, ChipSelect &cs)
-    : config(config), executor(executor), memProg(memProg), cs(cs) {
+AvrProgrammer::AvrProgrammer(const AvrConfig& config, OutputController& controller, MemoryProgrammer &memProg, ChipSelect &cs)
+    : config(config), executor(controller), memProg(memProg), cs(cs) {
 }
