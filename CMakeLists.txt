@@ -5,6 +5,7 @@ project(avr-prog-pi)
 set(SOURCES
     src/avrprogrammer.cpp
     src/chipselect.cpp
+    src/datareader.cpp
     src/instructionexecutor.cpp
     src/instructionfactory.cpp
     src/main.cpp
@@ -13,6 +14,7 @@ set(SOURCES
     src/pagememoryprogrammer.cpp
     src/printchipselect.cpp
     src/printspi.cpp
+    src/rawdatareader.cpp
     src/serialcontroller.cpp
     src/spi.cpp
     )
