@@ -18,14 +18,16 @@ Context createContext(const AvrConfig& config) {
 }
 
 int main() {
-    AvrConfig config(0x1000, 0x200, 64, 2);
-    Context context = createContext(config);
-    AvrProgrammer programmer(config, *context.getOutputController(), *context.getMemoryProgrammer(), *context.getChipSelect());
+    AvrConfig atmega8Cfg(0x1000, 0x200, 64, 2);
+    Context context = createContext(atmega8Cfg);
+    AvrProgrammer programmer(atmega8Cfg, *context.getOutputController(), *context.getMemoryProgrammer(), *context.getChipSelect());
 
     uint8_t data[] = {1, 2, 3, 4, 5, 6, 7, 8, 9};
 
     std::vector<uint8_t> vector(data, data + sizeof (data));
 
+    programmer.reset();
+    programmer.erase();
     programmer.writeMemory(vector);
 
     return 0;
