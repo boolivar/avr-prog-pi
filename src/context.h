@@ -1,11 +1,12 @@
 #ifndef CONTEXT_H
 #define CONTEXT_H
 
-#include <memory>
-
-#include "spi.h"
 #include "chipselect.h"
 #include "memoryprogrammer.h"
+#include "outputcontroller.h"
+#include "spi.h"
+
+#include <memory>
 
 class Context {
 public:
@@ -15,12 +16,16 @@ public:
     void setChipSelect(ChipSelect* cs) { m_cs = makeUnique(cs); }
     ChipSelect* getChipSelect() { return m_cs.get(); }
 
+    void setOutputController(OutputController* controller) { m_controller = makeUnique(controller); }
+    OutputController* getOutputController() { return m_controller.get(); }
+
     void setMemoryProgrammer(MemoryProgrammer* memProg) { m_memProg = makeUnique(memProg); }
     MemoryProgrammer* getMemoryProgrammer() { return m_memProg.get(); }
 
 private:
     std::unique_ptr<Spi> m_spi;
     std::unique_ptr<ChipSelect> m_cs;
+    std::unique_ptr<OutputController> m_controller;
     std::unique_ptr<MemoryProgrammer> m_memProg;
 
     template<typename T>
