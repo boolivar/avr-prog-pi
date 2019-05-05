@@ -13,7 +13,6 @@ void PrintChipSelect::disable() {
 }
 
 PrintChipSelect::PrintChipSelect() {
-    throw "boom";
     cout << "chip select init" << endl;
 }
 
