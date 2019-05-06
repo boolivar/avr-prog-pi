@@ -18,8 +18,10 @@ set(SOURCES
     src/serialcontroller.cpp
     src/spi.cpp
     src/spifactory.cpp
+    src/noop/spifactoryimpl.cpp
     )
 
 add_executable(${PROJECT_NAME} ${SOURCES})
 
 include_directories(src)
+include_directories(src/noop)

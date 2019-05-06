@@ -6,16 +6,17 @@
 #include "printspi.h"
 #include "rawdatareader.h"
 #include "serialcontroller.h"
+#include "spifactoryimpl.h"
 
 #include <istream>
 #include <sstream>
 #include <string>
 #include <vector>
 
-Context createContext(const AvrConfig& config) {
+Context createContext(const AvrConfig& config, SpiFactory& spiFactory) {
     Context ctx;
-    ctx.setSpi(new PrintSpi);
-    ctx.setChipSelect(new PrintChipSelect);
+    ctx.setSpi(spiFactory.createSpi().release());
+    ctx.setChipSelect(spiFactory.createChipSelect().release());
     ctx.setOutputController(new SerialController(*ctx.getSpi()));
     ctx.setMemoryProgrammer(new PageMemoryProgrammer(*ctx.getOutputController(), config.getPageSize()));
     return ctx;
@@ -23,7 +24,8 @@ Context createContext(const AvrConfig& config) {
 
 int main() {
     AvrConfig atmega8Cfg(0x1000, 0x200, 64, 2);
-    Context context = createContext(atmega8Cfg);
+    SpiFactoryImpl spiFactory;
+    Context context = createContext(atmega8Cfg, spiFactory);
     AvrProgrammer programmer(atmega8Cfg, *context.getOutputController(), *context.getMemoryProgrammer(), *context.getChipSelect());
     RawDataReader rdr;
 
