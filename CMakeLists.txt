@@ -17,6 +17,7 @@ set(SOURCES
     src/rawdatareader.cpp
     src/serialcontroller.cpp
     src/spi.cpp
+    src/spifactory.cpp
     )
 
 add_executable(${PROJECT_NAME} ${SOURCES})
