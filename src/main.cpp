@@ -8,7 +8,10 @@
 #include "serialcontroller.h"
 #include "spifactoryimpl.h"
 
+#include <algorithm>
+#include <fstream>
 #include <istream>
+#include <iterator>
 #include <sstream>
 #include <string>
 #include <vector>
@@ -33,8 +36,10 @@ int main() {
     std::vector<uint8_t> vector = rdr.readData(in);
 
     programmer.reset();
-    programmer.erase();
-    programmer.writeMemory(vector);
+    std::vector<uint8_t> data = programmer.readMemory();
+
+    std::ofstream ofs("out.bin", std::ofstream::out);
+    std::copy(data.begin(), data.end(), std::ostream_iterator<uint8_t>(ofs));
 
     return 0;
 }
