@@ -11,17 +11,25 @@
 #include <algorithm>
 #include <fstream>
 #include <istream>
+#include <iostream>
 #include <iterator>
 #include <sstream>
 #include <string>
 #include <vector>
 
 Context createContext(const AvrConfig& config, SpiFactory& spiFactory) {
+    std::cout << "Create context" << std::endl;
+    std::cout << "page size: " << static_cast<int>(config.getPageSize()) << std::endl;
     Context ctx;
+    std::cout << "spi" << std::endl;
     ctx.setSpi(spiFactory.createSpi().release());
+    std::cout << "cs" << std::endl;
     ctx.setChipSelect(spiFactory.createChipSelect().release());
+    std::cout << "output controller" << std::endl;
     ctx.setOutputController(new SerialController(*ctx.getSpi()));
+    std::cout << "page memory programmer" << std::endl;
     ctx.setMemoryProgrammer(new PageMemoryProgrammer(*ctx.getOutputController(), config.getPageSize()));
+    std::cout << "Context done!" << std::endl;
     return ctx;
 }
 
@@ -30,14 +38,14 @@ int main() {
     SpiFactoryImpl spiFactory;
     Context context = createContext(atmega8Cfg, spiFactory);
     AvrProgrammer programmer(atmega8Cfg, *context.getOutputController(), *context.getMemoryProgrammer(), *context.getChipSelect());
-    RawDataReader rdr;
 
-    std::istringstream in({1, 2, 3, 4, 5, 6, 7, 8, 9});
-    std::vector<uint8_t> vector = rdr.readData(in);
-
+    std::cout << "Reset" << std::endl;
     programmer.reset();
+
+    std::cout << "Read memory" << std::endl;
     std::vector<uint8_t> data = programmer.readMemory();
 
+    std::cout << "Write out.bin" << std::endl;
     std::ofstream ofs("out.bin", std::ofstream::out);
     std::copy(data.begin(), data.end(), std::ostream_iterator<uint8_t>(ofs));
 
