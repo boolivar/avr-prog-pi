@@ -11,6 +11,8 @@ public:
 
 private:
     std::weak_ptr<Bcm2835Allocator> bcm;
+
+    std::shared_ptr<Bcm2835Allocator> lockBcm();
 };
 
 #endif // SPIFACTORYIMPL_H
