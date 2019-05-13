@@ -7,8 +7,7 @@
 #include "rawdatareader.h"
 #include "serialcontroller.h"
 #include "spifactoryimpl.h"
-
-#include <getopt.h>
+#include "options.h"
 
 #include <algorithm>
 #include <fstream>
@@ -19,39 +18,6 @@
 #include <string>
 #include <vector>
 #include <unordered_map>
-
-static struct option options[] = {
-    {"avr", required_argument, nullptr, 'a'},
-    {"cs", required_argument, nullptr, 'c'},
-    {"size", required_argument, nullptr, 's'},
-    {"memory", required_argument, nullptr, 'm'},
-    {"format", required_argument, nullptr, 'f'},
-    {"write", no_argument, nullptr, 'w'},
-    {"help", no_argument, nullptr, 'h'},
-    {nullptr, 0, nullptr, 0}
-};
-
-std::string makeOptsString() {
-    std::string opts;
-    for (int i = 0; options[i].name != nullptr; ++i) {
-        opts += static_cast<char>(options[i].val);
-        if (options[i].has_arg != no_argument) {
-            opts += ":";
-        }
-    }
-    return opts;
-}
-
-std::unordered_map<std::string, std::string> properties(int argc, char** argv) {
-    std::unordered_map<std::string, std::string> props;
-    int opt;
-    int option_index;
-    std::string opts = makeOptsString();
-    while ((opt = getopt_long(argc, argv, opts.c_str(), options, &option_index)) != -1) {
-        props.emplace(std::string(1, static_cast<char>(opt)), optarg != nullptr ? optarg : "true");
-    }
-    return props;
-}
 
 Context createContext(const AvrConfig& config, SpiFactory& spiFactory) {
     std::cout << "Create context" << std::endl;
