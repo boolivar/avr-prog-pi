@@ -1,12 +1,13 @@
 #include "options.h"
 
+#include <exception>
 #include <getopt.h>
 
 static std::string makeOptsString();
 static std::string defaultIfAbsent(const std::unordered_map<std::string, std::string>& properties, const std::string& key, const std::string& fallback);
-
 static avr_mem_t parseMemory(const std::string& s);
 static file_format_t parseFormat(const std::string& s);
+static uint32_t parseMemSize(const std::string& s);
 
 static struct option options[] = {
     {"avr", required_argument, nullptr, 'a'},
@@ -51,7 +52,7 @@ Config config(const std::unordered_map<std::string, std::string>& properties) {
     std::string verbose = defaultIfAbsent(properties, "v", "false");
     std::string write = defaultIfAbsent(properties, "w", "false");
     std::string fileName = defaultIfAbsent(properties, "filename", "out.bin");
-    return Config(static_cast<uint8_t>(std::stoi(cs)), std::stoul(size), std::stoul(page), parseMemory(mem), parseFormat(format), verbose == "true", write == "true", fileName);
+    return Config(static_cast<uint8_t>(std::stoi(cs)), parseMemSize(size), std::stoul(page), parseMemory(mem), parseFormat(format), verbose == "true", write == "true", fileName);
 }
 
 std::string defaultIfAbsent(const std::unordered_map<std::string, std::string>& properties, const std::string& key, const std::string& fallback) {
@@ -77,4 +78,19 @@ file_format_t parseFormat(const std::string& s) {
         return HEX;
     }
     return BIN;
+}
+
+uint32_t parseMemSize(const std::string& s) {
+    size_t idx;
+    uint32_t value = std::stoul(s, &idx);
+
+    if (idx == s.length()) {
+        return value;
+    }
+
+    if ((idx == s.length() - 1) && (s.back() == 'K' || s.back() == 'k')) {
+        return value * 1024;
+    }
+
+    throw std::invalid_argument("Invalid mem size param: " + s);
 }
