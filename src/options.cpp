@@ -29,6 +29,12 @@ std::unordered_map<std::string, std::string> properties(int argc, char** argv) {
     while ((opt = getopt_long(argc, argv, opts.c_str(), options, &option_index)) != -1) {
         props.emplace(std::string(1, static_cast<char>(opt)), optarg != nullptr ? optarg : "true");
     }
+    if (optind < argc) {
+        if (argc - optind > 1) {
+            throw std::invalid_argument("Too many non-option arguments");
+        }
+        props.emplace("filename", argv[optind]);
+    }
     return props;
 }
 
