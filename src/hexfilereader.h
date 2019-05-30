@@ -10,10 +10,9 @@ class HexFileReader : public DataReader {
 public:
     virtual std::vector<uint8_t> readData(std::istream& in);
 
-    HexFileReader(const std::string& fileName, uint8_t fillValue = 0xff);
+    HexFileReader(uint8_t fillValue = 0xff);
 
 private:
-    std::string fileName;
     uint8_t fillValue;
 };
 

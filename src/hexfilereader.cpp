@@ -31,6 +31,6 @@ std::vector<uint8_t> HexFileReader::readData(std::istream& in) {
     return data;
 }
 
-HexFileReader::HexFileReader(const std::string& fileName, uint8_t fillValue)
-    : fileName(fileName), fillValue(fillValue) {
+HexFileReader::HexFileReader(uint8_t fillValue)
+    : fillValue(fillValue) {
 }
