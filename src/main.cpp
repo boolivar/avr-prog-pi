@@ -1,5 +1,6 @@
 #include "avrprogrammer.h"
 #include "context.h"
+#include "hexfilereader.h"
 #include "pagememoryprogrammer.h"
 #include "printchipselect.h"
 #include "printspi.h"
@@ -18,22 +19,9 @@
 #include <vector>
 #include <unordered_map>
 
-Context createContext(const Config& cfg) {
-    std::cout << "Create context" << std::endl;
-
-    Context ctx;
-    SpiFactoryImpl spiFactory;
-    std::cout << "spi" << std::endl;
-    ctx.setSpi(spiFactory.createSpi(0).release());
-    std::cout << "cs" << std::endl;
-    ctx.setChipSelect(spiFactory.createChipSelect(cfg.getCs()).release());
-    std::cout << "output controller" << std::endl;
-    ctx.setOutputController(new SerialController(*ctx.getSpi()));
-    std::cout << "page memory programmer" << std::endl;
-    ctx.setMemoryProgrammer(new PageMemoryProgrammer(*ctx.getOutputController(), cfg.getPage()));
-    std::cout << "Context done!" << std::endl;
-    return ctx;
-}
+static Context createContext(const Config& cfg);
+static std::vector<uint8_t> readMem(AvrProgrammer& programmer, avr_mem_t mem, size_t size);
+static int writeMem(AvrProgrammer& programmer, const std::vector<uint8_t>& data, avr_mem_t mem, size_t size);
 
 int main(int argc, char** argv) {
     std::unordered_map<std::string, std::string> props = properties(argc, argv);
@@ -49,12 +37,74 @@ int main(int argc, char** argv) {
     std::cout << "Reset" << std::endl;
     programmer.reset();
 
-    std::cout << "Read memory" << std::endl;
-    std::vector<uint8_t> data = programmer.readMemory(cfg.getSize());
-
-    std::cout << "Write " << cfg.getFileName() << std::endl;
-    std::ofstream ofs(cfg.getFileName(), std::ofstream::out);
-    std::copy(data.begin(), data.end(), std::ostream_iterator<uint8_t>(ofs));
-
+    if (cfg.isWrite()) {
+        std::cout << "Memory write from " << cfg.getFileName() << std::endl;
+        std::ifstream ifs(cfg.getFileName(), std::ofstream::in);
+        std::vector<uint8_t> data = context.getDataReader()->readData(ifs);
+        writeMem(programmer, data, cfg.getMemory(), cfg.getSize());
+    } else {
+        std::cout << "Memory read to " << cfg.getFileName() << std::endl;
+        std::ofstream ofs(cfg.getFileName(), std::ofstream::out);
+        std::vector<uint8_t> data = readMem(programmer, cfg.getMemory(), cfg.getSize());
+    }
     return 0;
+}
+
+Context createContext(const Config& cfg) {
+    std::cout << "Create context" << std::endl;
+    Context ctx;
+    SpiFactoryImpl spiFactory;
+
+    std::cout << "spi 0" << std::endl;
+    ctx.setSpi(spiFactory.createSpi(0).release());
+
+    std::cout << "cs " << cfg.getCs() << std::endl;
+    ctx.setChipSelect(spiFactory.createChipSelect(cfg.getCs()).release());
+
+    std::cout << "output controller" << std::endl;
+    ctx.setOutputController(new SerialController(*ctx.getSpi()));
+
+    std::cout << "page memory programmer " << cfg.getPage() << std::endl;
+    ctx.setMemoryProgrammer(new PageMemoryProgrammer(*ctx.getOutputController(), cfg.getPage()));
+
+    std::cout << "data reader " << cfg.getFormat() << std::endl;
+    ctx.setDataReader(cfg.getFormat() == HEX ? static_cast<DataReader*>(new HexFileReader) : new RawDataReader);
+
+    return ctx;
+}
+
+std::vector<uint8_t> readMem(AvrProgrammer& programmer, avr_mem_t mem, size_t size) {
+    if (mem == LOCK) {
+        std::cout << "Read lock" << std::endl;
+        uint8_t lock = programmer.readLock();
+        return std::vector<uint8_t>(1, lock);
+    } else if (mem == FUSE) {
+        std::cout << "Read fuse" << std::endl;
+        uint32_t fuse = programmer.readFuse(size);
+        return std::vector<uint8_t>(reinterpret_cast<uint8_t*>(&fuse), reinterpret_cast<uint8_t*>(&fuse) + size);
+    } else if (mem == EEPROM) {
+        std::cout << "Read eeprom" << std::endl;
+        return programmer.readEeprom(size);
+    } else {
+        std::cout << "Read memory" << std::endl;
+        return programmer.readMemory(size);
+    }
+}
+
+int writeMem(AvrProgrammer& programmer, const std::vector<uint8_t>& data, avr_mem_t mem, size_t size) {
+    if (mem == LOCK) {
+        std::cout << "Write lock" << std::endl;
+        return programmer.writeLock(data[0]);
+    } else if (mem == FUSE) {
+        std::cout << "Write fuse" << std::endl;
+        uint32_t fuse = 0;
+        std::copy(data.cbegin(), data.cend(), &fuse);
+        return programmer.writeFuse(fuse, data.size());
+    } else if (mem == EEPROM) {
+        std::cout << "Write eeprom" << std::endl;
+        return programmer.writeEeprom(data);
+    } else {
+        std::cout << "Read memory" << std::endl;
+        return programmer.writeMemory(data);
+    }
 }
