@@ -46,6 +46,7 @@ int main(int argc, char** argv) {
         std::cout << "Memory read to " << cfg.getFileName() << std::endl;
         std::ofstream ofs(cfg.getFileName(), std::ofstream::out);
         std::vector<uint8_t> data = readMem(programmer, cfg.getMemory(), cfg.getSize());
+        std::copy(data.cbegin(), data.cend(), std::ostream_iterator<uint8_t>(ofs));
     }
     return 0;
 }
