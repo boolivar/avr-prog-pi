@@ -1,3 +1,6 @@
 [submodule "lib/IntelHexParser"]
 	path = lib/IntelHexParser
 	url = https://github.com/bstrysko/IntelHexParser.git
+[submodule "lib/libintelhex"]
+	path = lib/libintelhex
+	url = https://github.com/bfoz/libintelhex.git
