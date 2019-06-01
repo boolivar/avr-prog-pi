@@ -12,6 +12,10 @@ list(REMOVE_ITEM SOURCES src/main.cpp)
 file(GLOB LIB_INTEL_HEX_PARSER_SOURCES lib/IntelHexParser/src/*.cpp)
 file(GLOB LIB_INTEL_HEX_SOURCES lib/libintelhex/src/*.cc)
 
+if(NOT EXISTS ${CMAKE_SOURCE_DIR}/test/catch.hpp)
+    file(DOWNLOAD https://github.com/catchorg/Catch2/releases/download/v2.8.0/catch.hpp ${CMAKE_SOURCE_DIR}/test/catch.hpp SHOW_PROGRESS)
+endif()
+
 include_directories(src)
 include_directories(src/noop)
 include_directories(test)
