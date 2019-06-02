@@ -19,7 +19,12 @@ std::vector<uint8_t> IntelHexFileReader::readData(std::istream& in) {
 
 int IntelHexFileReader::writeData(const std::vector<uint8_t>& data, std::ostream& out) {
     intelhex::hex_data hexData;
-    std::copy(data.cbegin(), data.cend(), hexData.begin()->second.begin());
+
+    if (!data.empty()) {
+        hexData.set(0, data[0]);
+        hexData.begin()->second = data;
+    }
+
     hexData.write(out);
     return 0;
 }

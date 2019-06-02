@@ -27,5 +27,10 @@ TEST_CASE("write hex", "[intelhexfilereader]") {
     std::ostringstream out;
     writer.writeData(data, out);
 
-    REQUIRE_THAT(out.str(), Equals(":0B00000061646472657373206761703E"));
+    std::ostringstream expected;
+    expected << ":0B0000006164647265737320676170B7"
+             << std::endl
+             << ":00000001FF"
+             << std::endl;
+    REQUIRE_THAT(out.str(), Equals(expected.str()));
 }
