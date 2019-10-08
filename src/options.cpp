@@ -59,7 +59,7 @@ Config config(const std::unordered_map<std::string, std::string>& properties) {
     std::string size = defaultIfAbsent(properties, "s", "32K");
     std::string verbose = defaultIfAbsent(properties, "v", "false");
     std::string write = defaultIfAbsent(properties, "w", "false");
-    std::string fileName = defaultIfAbsent(properties, "filename", "out.bin");
+    std::string fileName = defaultIfAbsent(properties, "filename", "out." + format);
     return Config(static_cast<uint8_t>(std::stoi(reset)), parseClock(clock), parseMemSize(size), std::stoul(page), parseMemory(mem), parseFormat(format), verbose == "true", write == "true", fileName);
 }
 
@@ -106,7 +106,10 @@ file_format_t parseFormat(const std::string& s) {
     if (s == "hex") {
         return HEX;
     }
-    return BIN;
+    if (s == "bin") {
+        return BIN;
+    }
+    throw std::invalid_argument("Invalid file format: " + s + ", supported: [hex, bin]");
 }
 
 uint32_t parseMemSize(const std::string& s) {
