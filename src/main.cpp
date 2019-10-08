@@ -56,8 +56,11 @@ Context createContext(const Config& cfg) {
     Context ctx;
     SpiFactoryImpl spiFactory;
 
-    std::cout << "spi 0" << std::endl;
+    std::cout << "spi 0 " << cfg.getClock() << "Hz" << std::endl;
     ctx.setSpi(spiFactory.createSpi(0).release());
+
+    ctx.getSpi()->setMode(0);
+    ctx.getSpi()->setSpeedHz(cfg.getClock());
 
     std::cout << "cs " << cfg.getCs() << std::endl;
     ctx.setChipSelect(spiFactory.createChipSelect(cfg.getCs()).release());
