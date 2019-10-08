@@ -19,6 +19,7 @@ typedef enum {
 class Config {
 public:
     Config(uint8_t cs,
+        uint32_t clock,
         uint32_t size,
         uint32_t page,
         avr_mem_t memory,
@@ -28,6 +29,7 @@ public:
         const std::string& fileName);
 
     uint8_t getCs() const;
+    uint32_t getClock() const;
     uint32_t getSize() const;
     uint32_t getPage() const;
     avr_mem_t getMemory() const;
@@ -38,6 +40,7 @@ public:
 
 private:
     uint8_t cs;
+    uint32_t clock;
     uint32_t size;
     uint32_t page;
     avr_mem_t memory;
