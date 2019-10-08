@@ -80,14 +80,14 @@ std::vector<uint8_t> readMem(AvrProgrammer& programmer, avr_mem_t mem, size_t si
         uint8_t lock = programmer.readLock();
         return std::vector<uint8_t>(1, lock);
     } else if (mem == FUSE) {
-        std::cout << "Read fuse" << std::endl;
+        std::cout << "Read fuse " << size << "bytes" << std::endl;
         uint32_t fuse = programmer.readFuse(size);
         return std::vector<uint8_t>(reinterpret_cast<uint8_t*>(&fuse), reinterpret_cast<uint8_t*>(&fuse) + size);
     } else if (mem == EEPROM) {
-        std::cout << "Read eeprom" << std::endl;
+        std::cout << "Read eeprom " << size << "bytes" << std::endl;
         return programmer.readEeprom(size);
     } else {
-        std::cout << "Read memory" << std::endl;
+        std::cout << "Read memory" << size << "bytes" << std::endl;
         return programmer.readMemory(size);
     }
 }
@@ -97,15 +97,15 @@ int writeMem(AvrProgrammer& programmer, const std::vector<uint8_t>& data, avr_me
         std::cout << "Write lock" << std::endl;
         return programmer.writeLock(data[0]);
     } else if (mem == FUSE) {
-        std::cout << "Write fuse" << std::endl;
+        std::cout << "Write fuse " << data.size() << "bytes" << std::endl;
         uint32_t fuse = 0;
         std::copy(data.cbegin(), data.cend(), &fuse);
         return programmer.writeFuse(fuse, data.size());
     } else if (mem == EEPROM) {
-        std::cout << "Write eeprom" << std::endl;
+        std::cout << "Write eeprom " << data.size() << "bytes" << std::endl;
         return programmer.writeEeprom(data);
     } else {
-        std::cout << "Read memory" << std::endl;
+        std::cout << "Write memory" << data.size() << "bytes" << std::endl;
         return programmer.writeMemory(data);
     }
 }
