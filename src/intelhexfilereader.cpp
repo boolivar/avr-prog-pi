@@ -4,7 +4,7 @@
 
 #include <algorithm>
 
-std::vector<uint8_t> IntelHexFileReader::readData(std::istream& in) {
+std::vector<uint8_t> IntelHexFileReader::read(std::istream& in) {
     intelhex::hex_data hexData;
 
     hexData.read(in);
@@ -17,7 +17,7 @@ std::vector<uint8_t> IntelHexFileReader::readData(std::istream& in) {
     return data;
 }
 
-int IntelHexFileReader::writeData(const std::vector<uint8_t>& data, std::ostream& out) {
+int IntelHexFileReader::write(const std::vector<uint8_t>& data, std::ostream& out) {
     intelhex::hex_data hexData;
 
     if (!data.empty()) {
