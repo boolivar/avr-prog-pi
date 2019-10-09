@@ -1,11 +1,12 @@
 #ifndef RAWDATAREADER_H
 #define RAWDATAREADER_H
 
-#include "datareader.h"
+#include "dataformat.h"
 
-class RawDataReader : public DataReader {
+class RawDataReader : public DataFormat {
 public:
-    virtual std::vector<uint8_t> readData(std::istream& in);
+    virtual std::vector<uint8_t> read(std::istream& in);
+    virtual int write(const std::vector<uint8_t>& data, std::ostream& out);
 };
 
 #endif // RAWDATAREADER_H

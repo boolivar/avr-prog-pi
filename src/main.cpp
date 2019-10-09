@@ -1,6 +1,6 @@
 #include "avrprogrammer.h"
 #include "context.h"
-#include "hexfilereader.h"
+#include "intelhexfilereader.h"
 #include "pagememoryprogrammer.h"
 #include "printchipselect.h"
 #include "printspi.h"
@@ -40,13 +40,13 @@ int main(int argc, char** argv) {
     if (cfg.isWrite()) {
         std::cout << "Memory write from " << cfg.getFileName() << std::endl;
         std::ifstream ifs(cfg.getFileName(), std::ofstream::in);
-        std::vector<uint8_t> data = context.getDataReader()->readData(ifs);
+        std::vector<uint8_t> data = context.getDataFormat()->read(ifs);
         writeMem(programmer, data, cfg.getMemory(), cfg.getSize());
     } else {
         std::cout << "Memory read to " << cfg.getFileName() << std::endl;
         std::ofstream ofs(cfg.getFileName(), std::ofstream::out);
         std::vector<uint8_t> data = readMem(programmer, cfg.getMemory(), cfg.getSize());
-        std::copy(data.cbegin(), data.cend(), std::ostream_iterator<uint8_t>(ofs));
+        context.getDataFormat()->write(data, ofs);
     }
     return 0;
 }
@@ -72,7 +72,11 @@ Context createContext(const Config& cfg) {
     ctx.setMemoryProgrammer(new PageMemoryProgrammer(*ctx.getOutputController(), cfg.getPage()));
 
     std::cout << "data reader " << cfg.getFormat() << std::endl;
-    ctx.setDataReader(cfg.getFormat() == HEX ? static_cast<DataReader*>(new HexFileReader) : new RawDataReader);
+    if (cfg.getFormat() == HEX) {
+        ctx.setDataFormat(new IntelHexFileReader());
+    } else {
+        ctx.setDataFormat(new RawDataReader());
+    }
 
     return ctx;
 }
