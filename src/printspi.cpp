@@ -30,8 +30,8 @@ err_t PrintSpi::transfer(uint8_t *buf, uint32_t len) {
     return 0;
 }
 
-PrintSpi::PrintSpi() {
-    cout << "spi init" << endl;
+PrintSpi::PrintSpi(uint8_t index, uint8_t csPin) {
+    cout << "spi " << index << " init, csPin " << csPin << endl;
 }
 
 PrintSpi::~PrintSpi() {

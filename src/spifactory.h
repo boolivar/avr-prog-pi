@@ -3,14 +3,11 @@
 
 #include <memory>
 
-class ChipSelect;
 class Spi;
 
 class SpiFactory {
 public:
-    virtual std::unique_ptr<Spi> createSpi(uint8_t index = 0) = 0;
-    virtual std::unique_ptr<ChipSelect> createChipSelect(uint8_t pin = 25) = 0;
-
+    virtual std::unique_ptr<Spi> createSpi(uint8_t index, uint8_t csPin) = 0;
     virtual ~SpiFactory();
 };
 

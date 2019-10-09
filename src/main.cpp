@@ -2,7 +2,6 @@
 #include "context.h"
 #include "intelhexfilereader.h"
 #include "pagememoryprogrammer.h"
-#include "printchipselect.h"
 #include "printspi.h"
 #include "rawdatareader.h"
 #include "serialcontroller.h"
@@ -32,7 +31,7 @@ int main(int argc, char** argv) {
 
     Config cfg = config(props);
     Context context = createContext(cfg);
-    AvrProgrammer programmer(*context.getOutputController(), *context.getMemoryProgrammer(), *context.getChipSelect());
+    AvrProgrammer programmer(*context.getOutputController(), *context.getMemoryProgrammer());
 
     std::cout << "Reset" << std::endl;
     programmer.reset();
@@ -57,13 +56,10 @@ Context createContext(const Config& cfg) {
     SpiFactoryImpl spiFactory;
 
     std::cout << "spi 0 " << cfg.getClock() << "Hz" << std::endl;
-    ctx.setSpi(spiFactory.createSpi(0).release());
+    ctx.setSpi(spiFactory.createSpi(0, cfg.getCs()).release());
 
     ctx.getSpi()->setMode(0);
     ctx.getSpi()->setSpeedHz(cfg.getClock());
-
-    std::cout << "cs " << cfg.getCs() << std::endl;
-    ctx.setChipSelect(spiFactory.createChipSelect(cfg.getCs()).release());
 
     std::cout << "output controller" << std::endl;
     ctx.setOutputController(new SerialController(*ctx.getSpi()));

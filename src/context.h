@@ -1,7 +1,6 @@
 #ifndef CONTEXT_H
 #define CONTEXT_H
 
-#include "chipselect.h"
 #include "dataformat.h"
 #include "memoryprogrammer.h"
 #include "outputcontroller.h"
@@ -14,9 +13,6 @@ public:
     void setSpi(Spi* spi) { m_spi = makeUnique(spi); }
     Spi* getSpi() { return m_spi.get(); }
 
-    void setChipSelect(ChipSelect* cs) { m_cs = makeUnique(cs); }
-    ChipSelect* getChipSelect() { return m_cs.get(); }
-
     void setOutputController(OutputController* controller) { m_controller = makeUnique(controller); }
     OutputController* getOutputController() { return m_controller.get(); }
 
@@ -28,7 +24,6 @@ public:
 
 private:
     std::unique_ptr<Spi> m_spi;
-    std::unique_ptr<ChipSelect> m_cs;
     std::unique_ptr<OutputController> m_controller;
     std::unique_ptr<MemoryProgrammer> m_memProg;
     std::unique_ptr<DataFormat> m_dataFormat;
