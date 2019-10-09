@@ -11,7 +11,7 @@ TEST_CASE("read hex", "[intelhexfilereader]") {
 
     std::string hex(":0B0010006164647265737320676170A7");
     std::istringstream in(hex);
-    std::vector<uint8_t> data = reader.readData(in);
+    std::vector<uint8_t> data = reader.read(in);
 
     CHECK(data.size() == (0x10 + 0x0B));
     REQUIRE_THAT(data, Equals(std::vector<uint8_t>({
@@ -25,7 +25,7 @@ TEST_CASE("write hex", "[intelhexfilereader]") {
 
     IntelHexFileReader writer;
     std::ostringstream out;
-    writer.writeData(data, out);
+    writer.write(data, out);
 
     std::ostringstream expected;
     expected << ":0B0000006164647265737320676170B7"
