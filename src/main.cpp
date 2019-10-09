@@ -83,14 +83,14 @@ std::vector<uint8_t> readMem(AvrProgrammer& programmer, avr_mem_t mem, size_t si
         uint8_t lock = programmer.readLock();
         return std::vector<uint8_t>(1, lock);
     } else if (mem == FUSE) {
-        std::cout << "Read fuse " << size << "bytes" << std::endl;
+        std::cout << "Read fuse " << size << " bytes" << std::endl;
         uint32_t fuse = programmer.readFuse(size);
         return std::vector<uint8_t>(reinterpret_cast<uint8_t*>(&fuse), reinterpret_cast<uint8_t*>(&fuse) + size);
     } else if (mem == EEPROM) {
-        std::cout << "Read eeprom " << size << "bytes" << std::endl;
+        std::cout << "Read eeprom " << size << " bytes" << std::endl;
         return programmer.readEeprom(size);
     } else {
-        std::cout << "Read memory" << size << "bytes" << std::endl;
+        std::cout << "Read memory " << size << " bytes" << std::endl;
         return programmer.readMemory(size);
     }
 }
