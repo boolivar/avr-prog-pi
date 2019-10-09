@@ -8,12 +8,15 @@ class Spi;
 
 class SerialController: public OutputController {
 public:
+    virtual void enable();
+    virtual void disable();
     virtual Instruction send(const Instruction& instruction);
 
-    SerialController(Spi& spi);
+    SerialController(Spi& spi, uint8_t csLevel = 1);
 
 private:
     Spi& spi;
+    uint8_t csLevel;
 
     uint8_t buf[Instruction::size];
 };

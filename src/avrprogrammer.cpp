@@ -1,7 +1,6 @@
 #include "avrprogrammer.h"
 
 #include "avrconfig.h"
-#include "chipselect.h"
 #include "instructionexecutor.h"
 #include "instructionfactory.h"
 #include "instruction.h"
@@ -11,8 +10,8 @@
 #include <functional>
 
 int AvrProgrammer::reset() {
-    cs.enable();
-    cs.disable();
+    controller.enable();
+    controller.disable();
 
     executor.exchange(&InstructionFactory::programmingEnable);
     return 0;
@@ -88,6 +87,6 @@ uint8_t AvrProgrammer::readLock(int mode) {
     return response.getBytes()[3];
 }
 
-AvrProgrammer::AvrProgrammer(OutputController& controller, MemoryProgrammer &memProg, ChipSelect &cs)
-    : executor(controller), memProg(memProg), cs(cs) {
+AvrProgrammer::AvrProgrammer(OutputController& controller, MemoryProgrammer& memProg)
+    : controller(controller), memProg(memProg), executor(controller) {
 }

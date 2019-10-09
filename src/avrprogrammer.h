@@ -25,12 +25,12 @@ public:
     uint32_t readFuse(uint8_t size, int mode = 0);
     uint8_t readLock(int mode = 0);
 
-    AvrProgrammer(OutputController& controller, MemoryProgrammer& memProg, ChipSelect& cs);
+    AvrProgrammer(OutputController& controller, MemoryProgrammer& memProg);
 
 private:
-    InstructionExecutor executor;
+    OutputController& controller;
     MemoryProgrammer& memProg;
-    ChipSelect& cs;
+    InstructionExecutor executor;
 };
 
 #endif // AVRPROGRAMMER_H
