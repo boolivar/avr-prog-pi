@@ -6,6 +6,11 @@
 
 using namespace std;
 
+err_t PrintSpi::chipSelect(uint8_t level) {
+    cout << "spi chip select: " << level << endl;
+    return 0;
+}
+
 err_t PrintSpi::setMode(uint8_t mode) {
     cout << "spi set mode: " << mode << endl;
     return 0;

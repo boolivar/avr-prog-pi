@@ -4,7 +4,7 @@
 #include "bcm2835spi.h"
 
 std::unique_ptr<Spi> SpiFactoryImpl::createSpi(uint8_t index) {
-    return std::make_unique<Bcm2835Spi>(lockBcm());
+    return std::make_unique<Bcm2835Spi>(25);
 }
 
 std::unique_ptr<ChipSelect> SpiFactoryImpl::createChipSelect(uint8_t pin) {
