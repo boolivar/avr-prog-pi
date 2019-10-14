@@ -13,8 +13,9 @@ public:
     PageMemoryProgrammer(OutputController& controller, uint8_t pageSize);
 
 private:
-    InstructionExecutor executor;
+    OutputController& controller;
     const uint8_t pageSize;
+    InstructionExecutor executor;
 };
 
 #endif // PAGEMEMORYPROGRAMMER_H

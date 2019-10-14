@@ -2,6 +2,7 @@
 
 #include "instruction.h"
 #include "instructionfactory.h"
+#include "outputcontroller.h"
 
 #include <functional>
 
@@ -14,15 +15,17 @@ int PageMemoryProgrammer::write(const uint8_t* data, uint32_t size, uint32_t fla
 
         if (pageAddr == (pageSize - 1)) {
             executor.exchange(std::bind(&InstructionFactory::writeMemoryPage, std::placeholders::_1, (flashOffset >> 1) & 0xffff));
+            controller.delay();
         }
     }
 
     if (flashOffset % pageSize) {
         executor.exchange(std::bind(&InstructionFactory::writeMemoryPage, std::placeholders::_1, (flashOffset >> 1) & 0xffff));
+        controller.delay();
     }
     return 0;
 }
 
 PageMemoryProgrammer::PageMemoryProgrammer(OutputController& controller, uint8_t pageSize)
-    : executor(controller), pageSize(pageSize) {
+    : controller(controller), pageSize(pageSize), executor(controller) {
 }

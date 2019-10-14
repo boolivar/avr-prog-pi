@@ -4,12 +4,10 @@
 
 void SerialController::enable() {
     spi.chipSelect(csLevel);
-    delay();
 }
 
 void SerialController::disable() {
     spi.chipSelect(!csLevel);
-    delay();
 }
 
 void SerialController::delay() {

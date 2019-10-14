@@ -12,6 +12,7 @@
 int AvrProgrammer::reset() {
     controller.enable();
     controller.disable();
+    controller.delay();
 
     executor.exchange(&InstructionFactory::programmingEnable);
     return 0;
@@ -19,6 +20,7 @@ int AvrProgrammer::reset() {
 
 int AvrProgrammer::erase() {
     executor.exchange(&InstructionFactory::chipErase);
+    controller.delay();
     return 0;
 }
 
@@ -29,22 +31,27 @@ int AvrProgrammer::writeMemory(const std::vector<uint8_t>& data, uint32_t flashO
 int AvrProgrammer::writeEeprom(const std::vector<uint8_t>& data, uint32_t eepromOffset) {
     for (std::vector<uint8_t>::const_iterator it = data.cbegin(); it != data.cend(); ++it, ++eepromOffset) {
         executor.exchange(std::bind(&InstructionFactory::writeEeprom, std::placeholders::_1, eepromOffset, *it));
+        controller.delay();
     }
     return -1;
 }
 
 int AvrProgrammer::writeFuse(uint32_t fuse, uint8_t size, int mode) {
     executor.exchange(std::bind(&InstructionFactory::writeFuseBits, std::placeholders::_1, fuse));
+    controller.delay();
     if (size > 1) {
         executor.exchange(std::bind(&InstructionFactory::writeFuseHighBits, std::placeholders::_1, fuse >> 8));
+        controller.delay();
         if (size > 2) {
             executor.exchange(std::bind(&InstructionFactory::writeFuseExtendedBits, std::placeholders::_1, fuse >> 16));
+            controller.delay();
         }
     }
 }
 
 int AvrProgrammer::writeLock(uint8_t lock, int mode) {
     executor.exchange(std::bind(&InstructionFactory::writeLockBits, std::placeholders::_1, lock));
+    controller.delay();
     return 0;
 }
 
