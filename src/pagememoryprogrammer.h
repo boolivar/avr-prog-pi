@@ -16,6 +16,8 @@ private:
     OutputController& controller;
     const uint8_t pageSize;
     InstructionExecutor executor;
+
+    void loadPageMemory(uint8_t addr, uint8_t data);
 };
 
 #endif // PAGEMEMORYPROGRAMMER_H
