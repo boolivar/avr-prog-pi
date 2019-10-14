@@ -12,8 +12,9 @@ public:
     virtual err_t setMode(uint8_t mode);
     virtual err_t setSpeedHz(uint32_t hz);
     virtual err_t transfer(uint8_t *buf, uint32_t len);
+    virtual err_t delay(uint32_t ms);
 
-    Bcm2835Spi(uint8_t csPin, uint32_t delayMs = 10);
+    Bcm2835Spi(uint8_t csPin);
     virtual ~Bcm2835Spi();
 
 private:

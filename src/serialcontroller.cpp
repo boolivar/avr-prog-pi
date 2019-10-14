@@ -4,10 +4,16 @@
 
 void SerialController::enable() {
     spi.chipSelect(csLevel);
+    delay();
 }
 
 void SerialController::disable() {
     spi.chipSelect(!csLevel);
+    delay();
+}
+
+void SerialController::delay() {
+    spi.delay(delayMs);
 }
 
 Instruction SerialController::send(const Instruction& instruction) {
@@ -16,6 +22,6 @@ Instruction SerialController::send(const Instruction& instruction) {
     return Instruction(buf);
 }
 
-SerialController::SerialController(Spi& spi, uint8_t csLevel)
-    : spi(spi), csLevel(csLevel) {
+SerialController::SerialController(Spi& spi, uint8_t csLevel, uint32_t delayMs)
+    : spi(spi), csLevel(csLevel), delayMs(delayMs) {
 }

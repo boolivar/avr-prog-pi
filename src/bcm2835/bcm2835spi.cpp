@@ -5,9 +5,6 @@
 err_t Bcm2835Spi::chipSelect(uint8_t level) {
     if (isValid()) {
         bcm2835_gpio_write(csPin, level ? HIGH : LOW);
-        if (delayMs > 0) {
-            bcm2835_delay(delayMs);
-        }
     }
     return 0;
 }
@@ -33,8 +30,15 @@ err_t Bcm2835Spi::transfer(uint8_t* buf, uint32_t len) {
     return 0;
 }
 
-Bcm2835Spi::Bcm2835Spi(uint8_t csPin, uint32_t delayMs)
-    : csPin(csPin), delayMs(delayMs), initValue(bcm2835_init()) {
+err_t Bcm2835Spi::delay(uint32_t ms) {
+    if (isValid() && ms > 0) {
+        bcm2835_delay(ms);
+    }
+    return 0;
+}
+
+Bcm2835Spi::Bcm2835Spi(uint8_t csPin)
+    : csPin(csPin), initValue(bcm2835_init()) {
     if (isValid()) {
         bcm2835_spi_begin();
         bcm2835_gpio_fsel(csPin, BCM2835_GPIO_FSEL_OUTP);
