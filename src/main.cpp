@@ -100,15 +100,15 @@ int writeMem(AvrProgrammer& programmer, const std::vector<uint8_t>& data, avr_me
         std::cout << "Write lock" << std::endl;
         return programmer.writeLock(data[0]);
     } else if (mem == FUSE) {
-        std::cout << "Write fuse " << data.size() << "bytes" << std::endl;
+        std::cout << "Write fuse " << data.size() << " bytes" << std::endl;
         uint32_t fuse = 0;
         std::copy(data.cbegin(), data.cend(), &fuse);
         return programmer.writeFuse(fuse, data.size());
     } else if (mem == EEPROM) {
-        std::cout << "Write eeprom " << data.size() << "bytes" << std::endl;
+        std::cout << "Write eeprom " << data.size() << " bytes" << std::endl;
         return programmer.writeEeprom(data);
     } else {
-        std::cout << "Write memory" << data.size() << "bytes" << std::endl;
+        std::cout << "Write memory " << data.size() << " bytes" << std::endl;
         return programmer.writeMemory(data);
     }
 }
