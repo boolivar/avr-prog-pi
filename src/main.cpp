@@ -108,6 +108,10 @@ int writeMem(AvrProgrammer& programmer, const std::vector<uint8_t>& data, avr_me
         std::cout << "Write eeprom " << data.size() << " bytes" << std::endl;
         return programmer.writeEeprom(data);
     } else {
+        std::cout << "Erase chip" << std::endl;
+        programmer.erase();
+        std::cout << "Reset" << std::endl;
+        programmer.reset();
         std::cout << "Write memory " << data.size() << " bytes" << std::endl;
         return programmer.writeMemory(data);
     }
