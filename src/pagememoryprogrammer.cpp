@@ -26,7 +26,7 @@ int PageMemoryProgrammer::write(const uint8_t* data, uint32_t size, uint32_t fla
 }
 
 PageMemoryProgrammer::PageMemoryProgrammer(OutputController& controller, uint8_t pageSize)
-    : controller(controller), pageSize(pageSize), executor(controller) {
+    : controller(controller), pageSize(pageSize * 2), executor(controller) {
 }
 
 void PageMemoryProgrammer::loadPageMemory(uint8_t addr, uint8_t data) {
