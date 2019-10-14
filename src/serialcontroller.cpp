@@ -10,8 +10,8 @@ void SerialController::disable() {
     spi.chipSelect(!csLevel);
 }
 
-void SerialController::delay() {
-    spi.delay(delayMs);
+void SerialController::wait() {
+    spi.wait(delayMs);
 }
 
 Instruction SerialController::send(const Instruction& instruction) {

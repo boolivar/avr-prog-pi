@@ -14,13 +14,13 @@ int PageMemoryProgrammer::write(const uint8_t* data, uint32_t size, uint32_t fla
 
         if (pageAddr == (pageSize - 1)) {
             executor.exchange(std::bind(&InstructionFactory::writeMemoryPage, std::placeholders::_1, (flashOffset >> 1) & 0xffff));
-            controller.delay();
+            controller.wait();
         }
     }
 
     if (flashOffset % pageSize) {
         executor.exchange(std::bind(&InstructionFactory::writeMemoryPage, std::placeholders::_1, (flashOffset >> 1) & 0xffff));
-        controller.delay();
+        controller.wait();
     }
     return 0;
 }

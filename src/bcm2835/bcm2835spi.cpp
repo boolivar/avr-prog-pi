@@ -30,7 +30,7 @@ err_t Bcm2835Spi::transfer(uint8_t* buf, uint32_t len) {
     return 0;
 }
 
-err_t Bcm2835Spi::delay(uint32_t ms) {
+err_t Bcm2835Spi::wait(uint32_t ms) {
     if (isValid() && ms > 0) {
         bcm2835_delay(ms);
     }

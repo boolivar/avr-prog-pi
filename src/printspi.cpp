@@ -30,8 +30,8 @@ err_t PrintSpi::transfer(uint8_t *buf, uint32_t len) {
     return 0;
 }
 
-err_t PrintSpi::delay(uint32_t ms) {
-    cout << "delay " << ms << "ms" << endl;
+err_t PrintSpi::wait(uint32_t ms) {
+    cout << "wait " << ms << "ms" << endl;
     return 0;
 }
 

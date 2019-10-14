@@ -10,7 +10,7 @@ class SerialController: public OutputController {
 public:
     virtual void enable();
     virtual void disable();
-    virtual void delay();
+    virtual void wait();
     virtual Instruction send(const Instruction& instruction);
 
     SerialController(Spi& spi, uint8_t csLevel = 1, uint32_t delayMs = 20);
