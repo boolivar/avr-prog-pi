@@ -38,12 +38,12 @@ int main(int argc, char** argv) {
 
     if (cfg.isWrite()) {
         std::cout << "Memory write from " << cfg.getFileName() << std::endl;
-        std::ifstream ifs(cfg.getFileName(), std::ofstream::in);
+        std::ifstream ifs(cfg.getFileName(), std::ifstream::binary);
         std::vector<uint8_t> data = context.getDataFormat()->read(ifs);
         writeMem(programmer, data, cfg.getMemory(), cfg.getSize());
     } else {
         std::cout << "Memory read to " << cfg.getFileName() << std::endl;
-        std::ofstream ofs(cfg.getFileName(), std::ofstream::out);
+        std::ofstream ofs(cfg.getFileName(), std::ofstream::binary | std::ofstream::trunc);
         std::vector<uint8_t> data = readMem(programmer, cfg.getMemory(), cfg.getSize());
         context.getDataFormat()->write(data, ofs);
     }
